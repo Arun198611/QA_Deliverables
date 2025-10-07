@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "cypress": "^15.2.0",
+    "cypress-mochawesome-reporter": "^4.0.2",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^5.0.0",
+    "mochawesome-report-generator": "^6.3.0",
+    "mssql": "^11.0.1"
+  },
+  "dependencies": {
+    "cypress-sql-server": "^1.0.0",
+    "mysql": "^2.18.1"
+  }
+}
