@@ -3,13 +3,12 @@ pipeline {
 
     environment {
         CI = 'true'
-        // ✅ Correct Cypress binary cache path for Windows Jenkins agent
         CYPRESS_CACHE_FOLDER = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache"
         PATH = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress;C:\\Program Files\\nodejs;%PATH%"
     }
 
     tools {
-        nodejs "NodeJS"  // ✅ Must match the name in Jenkins -> Manage Jenkins -> Global Tool Configuration
+        nodejs "NodeJS"
     }
 
     stages {
@@ -19,35 +18,39 @@ pipeline {
             }
         }
 
-        stage('Verify NodeJS Installation') {
+        // 👇 Add this stage right here
+        stage('Check Environment') {
             steps {
-                // ✅ This ensures Node and NPM are accessible
-                bat 'node -v'
-                bat 'npm -v'
+                bat '''
+                echo --- Checking environment variables ---
+                echo CI=%CI%
+                echo Cypress cache folder: %CYPRESS_CACHE_FOLDER%
+                echo Current PATH:
+                echo %PATH%
+                where node
+                where npm
+                dir "%CYPRESS_CACHE_FOLDER%"
+                dir "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress"
+                '''
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // ✅ Use clean install for CI (faster, reproducible)
-                bat 'npm ci || npm install'
+                bat 'npm install'
             }
         }
 
         stage('Run Cypress Tests') {
             steps {
-                // ✅ Ensure Cypress binary installs before running
-                bat 'npx cypress install'
-                bat 'npx cypress verify'
-                bat 'npx cypress run --browser chrome --headless'
+                bat 'npx cypress run --browser chrome'
             }
         }
 
         stage('Generate Mochawesome Report') {
             steps {
-                // ✅ Adjust path based on your report structure
-                bat 'npx mochawesome-merge cypress/reports/html/.jsons/*.json > cypress/reports/mochawesome.json'
-                bat 'npx marge cypress/reports/mochawesome.json --reportDir cypress/reports/html'
+                bat 'npx mochawesome-merge cypress/reports/*.json > mochawesome.json'
+                bat 'npx marge mochawesome.json --reportDir cypress/reports/html'
             }
         }
     }
