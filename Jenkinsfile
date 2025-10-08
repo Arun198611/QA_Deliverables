@@ -4,14 +4,21 @@ pipeline {
     environment {
         CI = 'true'
         CYPRESS_CACHE_FOLDER = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache"
-        PATH = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress;C:\\Program Files\\nodejs;%PATH%"
+        PATH = "C:\\Windows\\System32;C:\\Program Files\\nodejs;C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress;%PATH%"
     }
 
     tools {
-        nodejs "NodeJS"   // Name of NodeJS installation in Jenkins Global Tools
+        nodejs "NodeJS"
     }
 
     stages {
+
+        stage('Clean Workspace') {
+            steps {
+                bat 'C:\\Windows\\System32\\cmd.exe /c rmdir /s /q "%WORKSPACE%" && mkdir "%WORKSPACE%"'
+            }
+        }
+
         stage('Checkout Code') {
             steps {
                 git branch: 'development', url: 'https://github.com/Arun198611/QA_Deliverables.git'
@@ -21,49 +28,54 @@ pipeline {
         stage('Check Environment') {
             steps {
                 bat '''
-                echo --- Checking environment variables ---
-                echo CI=%CI%
-                echo Cypress cache folder: %CYPRESS_CACHE_FOLDER%
-                where cmd
-                where node
-                where npm
-                dir "%CYPRESS_CACHE_FOLDER%"
-                dir "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress"
+                C:\\Windows\\System32\\cmd.exe /c echo --- Checking Environment Variables ---
+                C:\\Windows\\System32\\cmd.exe /c echo CI=%CI%
+                C:\\Windows\\System32\\cmd.exe /c echo Cypress Cache Folder: %CYPRESS_CACHE_FOLDER%
+                C:\\Windows\\System32\\where.exe node
+                C:\\Windows\\System32\\where.exe npm
+                C:\\Windows\\System32\\cmd.exe /c dir "%CYPRESS_CACHE_FOLDER%"
+                C:\\Windows\\System32\\cmd.exe /c dir "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress"
                 '''
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm ci || npm install'
+                bat 'C:\\Program Files\\nodejs\\npm.cmd install'
             }
         }
 
         stage('Ensure Cypress Installed') {
             steps {
-                bat '''
-                IF NOT EXIST "%CYPRESS_CACHE_FOLDER%\\15.2.0\\Cypress\\Cypress.exe" (
-                    echo Cypress binary not found. Installing Cypress...
-                    npx cypress install
-                ) ELSE (
-                    echo Cypress binary already exists.
-                )
-                '''
+                bat 'C:\\Program Files\\nodejs\\npx.cmd cypress verify'
             }
         }
 
-        stage('Run Cypress Tests') {
+        stage('Run Cypress Tests - Headless') {
             steps {
-                bat 'npx cypress run --browser chrome --record=false'
+                bat 'C:\\Program Files\\nodejs\\npx.cmd cypress run --browser chrome'
+            }
+        }
+
+        stage('Run Cypress Tests - GUI (Optional)') {
+            when {
+                expression { return params.RUN_GUI == true }
+            }
+            steps {
+                bat 'C:\\Program Files\\nodejs\\npx.cmd cypress open'
             }
         }
 
         stage('Generate Mochawesome Report') {
             steps {
-                bat 'npx mochawesome-merge cypress/reports/*.json > mochawesome.json'
-                bat 'npx marge mochawesome.json --reportDir cypress/reports/html'
+                bat 'C:\\Program Files\\nodejs\\npx.cmd mochawesome-merge cypress/reports/*.json > mochawesome.json'
+                bat 'C:\\Program Files\\nodejs\\npx.cmd marge mochawesome.json --reportDir cypress/reports/html'
             }
         }
+    }
+
+    parameters {
+        booleanParam(name: 'RUN_GUI', defaultValue: false, description: 'Run Cypress in GUI mode for debugging')
     }
 
     post {
