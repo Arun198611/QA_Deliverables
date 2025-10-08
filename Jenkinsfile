@@ -8,37 +8,53 @@ pipeline {
     }
 
     tools {
-        nodejs "NodeJS"
+        nodejs "NodeJS"   // Name of NodeJS installation in Jenkins Global Tools
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
                 git branch: 'development', url: 'https://github.com/Arun198611/QA_Deliverables.git'
             }
         }
 
-        // 👇 Add this stage right here
-       stage('Check Environment') {
-    steps {
-        bat '''
-        C:\\Windows\\System32\\cmd.exe /c echo --- Checking environment variables ---
-        C:\\Windows\\System32\\cmd.exe /c where node
-        C:\\Windows\\System32\\cmd.exe /c where npm
-        '''
-    }
-}
-
+        stage('Check Environment') {
+            steps {
+                bat '''
+                echo --- Checking environment variables ---
+                echo CI=%CI%
+                echo Cypress cache folder: %CYPRESS_CACHE_FOLDER%
+                where cmd
+                where node
+                where npm
+                dir "%CYPRESS_CACHE_FOLDER%"
+                dir "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress"
+                '''
+            }
+        }
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm install'
+                bat 'npm ci || npm install'
+            }
+        }
+
+        stage('Ensure Cypress Installed') {
+            steps {
+                bat '''
+                IF NOT EXIST "%CYPRESS_CACHE_FOLDER%\\15.2.0\\Cypress\\Cypress.exe" (
+                    echo Cypress binary not found. Installing Cypress...
+                    npx cypress install
+                ) ELSE (
+                    echo Cypress binary already exists.
+                )
+                '''
             }
         }
 
         stage('Run Cypress Tests') {
             steps {
-                bat 'npx cypress run --browser chrome'
+                bat 'npx cypress run --browser chrome --record=false'
             }
         }
 
