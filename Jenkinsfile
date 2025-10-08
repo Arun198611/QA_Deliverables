@@ -76,8 +76,8 @@ pipeline {
             steps {
                 echo "Generating Mochawesome report..."
                 // Adjust your report generation command if needed
-                bat "\"${env.NPX_CMD}\" mochawesome-merge cypress/results/*.json > mochawesome.json"
-                bat "\"${env.NPX_CMD}\" marge mochawesome.json -f report -o cypress/results"
+             //   bat "\"${env.NPX_CMD}\" mochawesome-merge cypress/results/*.json > mochawesome.json"
+             //   bat "\"${env.NPX_CMD}\" marge mochawesome.json -f report -o cypress/results"
             }
         }
     }
