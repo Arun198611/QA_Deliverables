@@ -1,7 +1,7 @@
 pipeline {
     agent any
-    options {
-        shell('cmd')
+    tools {
+        nodejs "NodeJS"   // Use your configured NodeJS tool name
     }
 
       environment {
