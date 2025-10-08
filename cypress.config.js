@@ -2,18 +2,18 @@ const { defineConfig } = require("cypress");
 const sql = require("mssql");
 
 module.exports = defineConfig({
-  reporter: "cypress-mochawesome-reporter",
+  reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
-    reportDir: "cypress/reports/html",
+    reportDir: 'cypress/reports/json',
     overwrite: false,
-    html: true,
+    html: false,
     json: true, // ✅ generate JSON files for merging
   },
 
   e2e: {
     setupNodeEvents(on, config) {
       // ✅ Setup Mochawesome plugin
-      require("cypress-mochawesome-reporter/plugin")(on);
+      require('cypress-mochawesome-reporter/plugin')(on);
 
       // ✅ MSSQL Database task
       on("task", {
