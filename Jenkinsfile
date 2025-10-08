@@ -1,9 +1,6 @@
 pipeline {
     agent any
-    tools {
-        nodejs "NodeJS"   // Use your configured NodeJS tool name
-    }
-
+   
       environment {
         CI = 'true'
         CYPRESS_CACHE_FOLDER = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache"
@@ -30,14 +27,14 @@ pipeline {
         stage('Run Cypress Tests') {
             steps {
                 // Run in headless Chrome mode
-                bat 'npx cypress run --browser chrome'
+                sh 'npx cypress run --browser chrome'
             }
         }
 
         stage('Generate Mochawesome Report') {
             steps {
-                bat 'npx mochawesome-merge cypress/reports/*.json > mochawesome.json'
-                bat 'npx marge mochawesome.json --reportDir cypress/reports/html'
+                sh 'npx mochawesome-merge cypress/reports/*.json > mochawesome.json'
+                sh 'npx marge mochawesome.json --reportDir cypress/reports/html'
             }
         }
     }
