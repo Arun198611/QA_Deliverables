@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    options {
+        shell('cmd')
+    }
 
       environment {
         CI = 'true'
