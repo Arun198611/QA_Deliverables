@@ -20,21 +20,21 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Run Cypress Tests') {
             steps {
                 // Run in headless Chrome mode
-                sh 'npx cypress run --browser chrome'
+                bat 'npx cypress run --browser chrome'
             }
         }
 
         stage('Generate Mochawesome Report') {
             steps {
-                sh 'npx mochawesome-merge cypress/reports/*.json > mochawesome.json'
-                sh 'npx marge mochawesome.json --reportDir cypress/reports/html'
+                bat 'npx mochawesome-merge cypress/reports/*.json > mochawesome.json'
+                bat 'npx marge mochawesome.json --reportDir cypress/reports/html'
             }
         }
     }
