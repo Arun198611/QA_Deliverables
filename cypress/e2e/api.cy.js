@@ -3,7 +3,7 @@ it('passes', () => {
 
 cy.request('GET', 'https://formatjsononline.com/api/users/usr_1').then((response) => {
       expect(response.status).to.eq(200);
-      expect(response.duration).to.be.below(5000);
+      expect(response.duration).to.be.below(500);
       const ResponseTime=response.duration;
       cy.log(ResponseTime);
 })
