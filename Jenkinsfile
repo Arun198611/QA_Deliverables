@@ -19,21 +19,16 @@ pipeline {
         }
 
         // 👇 Add this stage right here
-        stage('Check Environment') {
-            steps {
-                bat '''
-                echo --- Checking environment variables ---
-                echo CI=%CI%
-                echo Cypress cache folder: %CYPRESS_CACHE_FOLDER%
-                echo Current PATH:
-                echo %PATH%
-                where node
-                where npm
-                dir "%CYPRESS_CACHE_FOLDER%"
-                dir "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress"
-                '''
-            }
-        }
+       stage('Check Environment') {
+    steps {
+        bat '''
+        C:\\Windows\\System32\\cmd.exe /c echo --- Checking environment variables ---
+        C:\\Windows\\System32\\cmd.exe /c where node
+        C:\\Windows\\System32\\cmd.exe /c where npm
+        '''
+    }
+}
+
 
         stage('Install Dependencies') {
             steps {
