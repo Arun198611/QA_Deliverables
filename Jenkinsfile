@@ -2,9 +2,15 @@ pipeline {
     agent any
 
     environment {
-        CI = 'true'
+        // Absolute paths to Node, NPM, NPX
         NODE_PATH = "C:\\Program Files\\nodejs"
-        CYPRESS_BIN = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress\\Cypress.exe"
+        NPM_CMD   = "C:\\Program Files\\nodejs\\npm.cmd"
+        NPX_CMD   = "C:\\Program Files\\nodejs\\npx.cmd"
+        
+        // Prepend PowerShell folder to PATH for Windows service
+        PATH = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0;${env.NODE_PATH};${env.PATH}"
+        
+        // Cypress cache folder (adjust user folder if needed)
         CYPRESS_CACHE_FOLDER = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache"
     }
 
@@ -12,69 +18,74 @@ pipeline {
 
         stage('Clean Workspace') {
             steps {
-                echo 'Cleaning workspace...'
+                echo "Cleaning workspace..."
                 deleteDir()
             }
         }
 
         stage('Checkout Code') {
             steps {
-                git branch: 'development', url: 'https://github.com/Arun198611/QA_Deliverables.git'
+                echo "Checking out source code..."
+                checkout scm
             }
         }
 
         stage('Check Environment') {
             steps {
-                echo 'Checking environment...'
-                bat "\"${env.NODE_PATH}\\node.exe\" --version"
-                bat "\"${env.NODE_PATH}\\npm.cmd\" --version"
-                bat "dir \"${env.CYPRESS_CACHE_FOLDER}\""
-                bat "dir \"${env.CYPRESS_BIN}\""
+                echo "Checking environment variables and paths..."
+                bat """
+                "${env.NODE_PATH}\\node.exe" --version
+                "${env.NPM_CMD}" --version
+                dir "${env.CYPRESS_CACHE_FOLDER}"
+                """
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat "\"${env.NODE_PATH}\\npm.cmd\" install"
+                echo "Installing npm dependencies..."
+                bat "\"${env.NPM_CMD}\" install"
             }
         }
 
         stage('Ensure Cypress Installed') {
             steps {
-                bat "\"${env.NODE_PATH}\\npx.cmd\" cypress verify"
+                echo "Verifying Cypress installation..."
+                bat "\"${env.NPX_CMD}\" cypress verify"
             }
         }
 
         stage('Run Cypress Tests - Headless') {
             steps {
-                bat "\"${env.NODE_PATH}\\npx.cmd\" cypress run --browser chrome"
+                echo "Running Cypress tests in headless mode..."
+                bat "\"${env.NPX_CMD}\" cypress run --browser chrome"
             }
         }
 
         stage('Run Cypress Tests - GUI (Optional)') {
+            when {
+                expression { return params.RUN_GUI == true }
+            }
             steps {
-                input message: "Run Cypress GUI?"
-                bat "\"${env.CYPRESS_BIN}\""
+                echo "Running Cypress in GUI mode (optional)..."
+                bat "\"${env.NPX_CMD}\" cypress open"
             }
         }
 
         stage('Generate Mochawesome Report') {
             steps {
-                bat "\"${env.NODE_PATH}\\npx.cmd\" mochawesome-merge cypress\\reports\\*.json > mochawesome.json"
-                bat "\"${env.NODE_PATH}\\npx.cmd\" marge mochawesome.json --reportDir cypress\\reports\\html"
+                echo "Generating Mochawesome report..."
+                // Adjust your report generation command if needed
+                bat "\"${env.NPX_CMD}\" mochawesome-merge cypress/results/*.json > mochawesome.json"
+                bat "\"${env.NPX_CMD}\" marge mochawesome.json -f report -o cypress/results"
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'cypress/reports/html/**/*', allowEmptyArchive: true
-        }
-        failure {
-            echo '❌ Tests failed! Check the HTML report.'
-        }
-        success {
-            echo '✅ Tests passed successfully!'
+            archiveArtifacts artifacts: 'cypress/results/**/*.*', allowEmptyArchive: true
+            echo "Pipeline finished. Check reports for details."
         }
     }
 }
