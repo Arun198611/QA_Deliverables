@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+      environment {
+        CI = 'true'
+        CYPRESS_CACHE_FOLDER = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache"
+        PATH = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache\\15.2.0\\Cypress;%PATH%"
+    }
+
     tools {
         nodejs "NodeJS"
     }
