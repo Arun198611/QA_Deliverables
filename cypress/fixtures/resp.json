@@ -1,0 +1,82 @@
+{
+  "response": {
+    "body": {
+      "id": "ff8081819782e69e0199eccea80f62ff",
+      "name": "Apple MacBook Pro 16",
+      "createdAt": "2025-10-16T11:36:30.479+00:00",
+      "data": {
+        "year": 2019,
+        "price": 5849.99,
+        "CPU model": "Intel Core i9",
+        "Hard disk size": "1 TB"
+      }
+    },
+    "headers": {
+      "date": "Thu, 16 Oct 2025 11:36:30 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "server": "cloudflare",
+      "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+      "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+      "cf-cache-status": "DYNAMIC",
+      "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=UjIMDTjbVrg94nbpH5%2BrYlU4VzYHAnQpM5V6yWGhy7dvi7L%2BwjxMRssGNv3pkN8AJuhlGTMzWbLRLAjr%2B8WJKLtd5mmN2AVGOxY0fyuHFhqd3dw%3D\"}]}",
+      "content-encoding": "gzip",
+      "cf-ray": "98f742465f358365-SIN",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "status": 200,
+    "statusText": "OK",
+    "isOkStatusCode": true,
+    "requestHeaders": {
+      "Connection": "keep-alive",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "accept": "*/*",
+      "accept-encoding": "gzip, deflate",
+      "content-type": "application/json",
+      "content-length": 120
+    },
+    "requestBody": "{\"name\":\"Apple MacBook Pro 16\",\"data\":{\"year\":2019,\"price\":5849.99,\"CPU model\":\"Intel Core i9\",\"Hard disk size\":\"1 TB\"}}",
+    "duration": 193,
+    "allRequestResponses": [
+      {
+        "Request Body": "{\"name\":\"Apple MacBook Pro 16\",\"data\":{\"year\":2019,\"price\":5849.99,\"CPU model\":\"Intel Core i9\",\"Hard disk size\":\"1 TB\"}}",
+        "Request Headers": {
+          "Connection": "keep-alive",
+          "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+          "accept": "*/*",
+          "accept-encoding": "gzip, deflate",
+          "content-type": "application/json",
+          "content-length": 120
+        },
+        "Request URL": "https://api.restful-api.dev/objects",
+        "Response Body": {
+          "id": "ff8081819782e69e0199eccea80f62ff",
+          "name": "Apple MacBook Pro 16",
+          "createdAt": "2025-10-16T11:36:30.479+00:00",
+          "data": {
+            "year": 2019,
+            "price": 5849.99,
+            "CPU model": "Intel Core i9",
+            "Hard disk size": "1 TB"
+          }
+        },
+        "Response Headers": {
+          "date": "Thu, 16 Oct 2025 11:36:30 GMT",
+          "content-type": "application/json",
+          "transfer-encoding": "chunked",
+          "connection": "keep-alive",
+          "server": "cloudflare",
+          "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+          "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+          "cf-cache-status": "DYNAMIC",
+          "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=UjIMDTjbVrg94nbpH5%2BrYlU4VzYHAnQpM5V6yWGhy7dvi7L%2BwjxMRssGNv3pkN8AJuhlGTMzWbLRLAjr%2B8WJKLtd5mmN2AVGOxY0fyuHFhqd3dw%3D\"}]}",
+          "content-encoding": "gzip",
+          "cf-ray": "98f742465f358365-SIN",
+          "alt-svc": "h3=\":443\"; ma=86400"
+        },
+        "Response Status": 200
+      }
+    ]
+  }
+}
