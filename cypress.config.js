@@ -62,6 +62,9 @@ module.exports = defineConfig({
      "cypress/e2e/api.cy.js",
      "cypress/e2e/newaccount.cy.js",
      "cypress/e2e/sample.cy.js",
+     "cypress/e2e/apifullusers.cy.js",
+     "cypress/e2e/postapi.cy.js",
+     "cypress/e2e/dynamicidgetapi.cy.js"
   ],
   },
 });
