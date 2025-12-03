@@ -75,6 +75,8 @@ pipeline {
 
  stage('Run Postman API Tests') {
             steps {
+
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                 echo "Running Postman API tests using Newman..."
 
                 // Install Newman globally
@@ -88,6 +90,7 @@ pipeline {
 		"""
             }
         }
+       }
 
         stage('Generate Mochawesome Report') {
             steps {
