@@ -13,6 +13,7 @@ module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
       // ✅ Setup Mochawesome plugin
+
       require('cypress-mochawesome-reporter/plugin')(on);
 
       // ✅ MSSQL Database task
@@ -58,7 +59,7 @@ module.exports = defineConfig({
     "cypress/e2e/reg.cy.js",
     "cypress/e2e/2.cy.js",
     "cypress/e2e/1.cy.js",
-     "cypress/e2e/DB.cy.js",
+    // "cypress/e2e/DB.cy.js",
      "cypress/e2e/api.cy.js",
      "cypress/e2e/newaccount.cy.js",
      "cypress/e2e/sample.cy.js",

@@ -4,6 +4,7 @@ import Register, { register } from "../Pageobjects/Register"
 describe('Register',()=>{
 
          it('Register a new user',()=>{
+      
 
     
 cy.fixture('data.json').then((data)=>{
