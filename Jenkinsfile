@@ -72,6 +72,23 @@ pipeline {
             }
         }
 
+
+ stage('Run Postman API Tests') {
+            steps {
+                echo "Running Postman API tests using Newman..."
+
+                // Install Newman globally
+                bat "\"${env.NPM_CMD}\" install -g newman"
+
+                // Run Postman tests (update the file paths inside your repo)
+                bat """
+                newman run "Postman\\Collections v2.json" ^
+		--reporters cli,junit ^
+		--reporter-junit-export newman-report.xml
+		"""
+            }
+        }
+
         stage('Generate Mochawesome Report') {
             steps {
                 echo "Generating Mochawesome report..."
@@ -85,6 +102,8 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'cypress/results/**/*.*', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'newman-report.xml', allowEmptyArchive: true
+            junit 'newman-report.xml'  // publish Postman test results
             echo "Pipeline finished. Check reports for details."
         }
     }
