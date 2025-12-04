@@ -1,15 +1,14 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_PATH = "C:\\Program Files\\nodejs"
-        NPM_CMD   = "C:\\Program Files\\nodejs\\npm.cmd"
-        NPX_CMD   = "C:\\Program Files\\nodejs\\npx.cmd"
+environment {
+    NODE_PATH = "C:\\Program Files\\nodejs"
+    NPM_GLOBAL_BIN = "C:\\Users\\aruns\\AppData\\Roaming\\npm"
+    NPM_CMD   = "C:\\Program Files\\nodejs\\npm.cmd"
+    NPX_CMD   = "C:\\Program Files\\nodejs\\npx.cmd"
 
-        PATH = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0;${env.NODE_PATH};${env.PATH}"
-
-        CYPRESS_CACHE_FOLDER = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache"
-    }
+    PATH = "${env.NPM_GLOBAL_BIN};${env.NODE_PATH};${env.PATH}"
+}
 
     stages {
 
@@ -72,24 +71,23 @@ pipeline {
         /* -------------------------------
          *       POSTMAN API TESTS
          * ------------------------------- */
-        stage('Run Postman Tests') {
-            steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    echo "Running Postman API tests using Newman..."
+stage('Run Postman Tests') {
+    steps {
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+            echo "Running Postman API tests using Newman..."
 
-                    bat '"C:\\Program Files\\nodejs\\npm.cmd" install -g newman'
+            bat '"C:\\Program Files\\nodejs\\npm.cmd" install -g newman'
 
-                    bat 'if not exist newman mkdir newman'
+            bat 'if not exist newman mkdir newman'
 
-                    bat """
-                    newman run "Postman/Collections v2.json" ^
-                        -r cli,junit ^
-                        --reporter-junit-export newman/newman-report.xml
-                    """
-                }
-            }
+            bat """
+            "C:\\Users\\aruns\\AppData\\Roaming\\npm\\newman.cmd" run "Postman/Collections v2.json" ^
+                -r cli,junit ^
+                --reporter-junit-export newman/newman-report.xml
+            """
         }
-
+    }
+}
         stage('Generate Mochawesome Report') {
             steps {
                 echo "Generating Mochawesome report..."
