@@ -72,25 +72,23 @@ pipeline {
         /* -------------------------------
          *       POSTMAN API TESTS
          * ------------------------------- */
-        stage('Run Postman API Tests') {
-            steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    echo "Running Postman API tests using Newman..."
+stage('Run Postman API Tests') {
+    steps {
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+            echo "Running Postman API tests using Newman..."
 
-                    bat '''
-                    "C:\\Program Files\\nodejs\\npm.cmd" install -g newman
+            bat """
+            "C:\\Program Files\\nodejs\\npm.cmd" install -g newman
 
-                    rem Add global npm folder to PATH
-                    set PATH=C:\\Users\\%USERNAME%\\AppData\\Roaming\\npm;%PATH%
+            SET PATH=C:\\Users\\%USERNAME%\\AppData\\Roaming\\npm;%PATH%
 
-                    rem Run Postman collection
-                    newman run "Postman/Collections v2.json" ^
-                        --reporters cli,junit ^
-                        --reporter-junit-export newman-report.xml
-                    '''
-                }
-            }
+            newman run "Postman\\Collections v2.json" ^
+                --reporters cli,junit ^
+                --reporter-junit-export newman-report.xml
+            """
         }
+    }
+}
 
         stage('Generate Mochawesome Report') {
             steps {
