@@ -2,15 +2,12 @@ pipeline {
     agent any
 
     environment {
-        // Absolute paths to Node, NPM, NPX
         NODE_PATH = "C:\\Program Files\\nodejs"
         NPM_CMD   = "C:\\Program Files\\nodejs\\npm.cmd"
         NPX_CMD   = "C:\\Program Files\\nodejs\\npx.cmd"
-        
-        // Prepend PowerShell folder to PATH for Windows service
+
         PATH = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0;${env.NODE_PATH};${env.PATH}"
-        
-        // Cypress cache folder (adjust user folder if needed)
+
         CYPRESS_CACHE_FOLDER = "C:\\Users\\aruns\\AppData\\Local\\Cypress\\Cache"
     }
 
@@ -67,38 +64,37 @@ pipeline {
                 expression { return params.RUN_GUI == true }
             }
             steps {
-                echo "Running Cypress in GUI mode (optional)..."
+                echo "Running Cypress in GUI mode..."
                 bat "\"${env.NPX_CMD}\" cypress open"
             }
         }
 
+        /* -------------------------------
+         *       POSTMAN API TESTS
+         * ------------------------------- */
+        stage('Run Postman API Tests') {
+            steps {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    echo "Running Postman API tests using Newman..."
 
-stage('Run Postman API Tests') {
-    steps {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-            echo "Running Postman API tests using Newman..."
+                    bat '''
+                    "C:\\Program Files\\nodejs\\npm.cmd" install -g newman
 
-            bat '''
-            "C:\\Program Files\\nodejs\\npm.cmd" install -g newman
+                    rem Add global npm folder to PATH
+                    set PATH=C:\\Users\\%USERNAME%\\AppData\\Roaming\\npm;%PATH%
 
-            rem Add global npm folder to PATH
-            set PATH=C:\\Users\\%USERNAME%\\AppData\\Roaming\\npm;%PATH%
-
-            rem Run Postman collection
-            newman run "Postman/Collections v2.json" ^
-                --reporters cli,junit ^
-                --reporter-junit-export newman-report.xml
-            '''
+                    rem Run Postman collection
+                    newman run "Postman/Collections v2.json" ^
+                        --reporters cli,junit ^
+                        --reporter-junit-export newman-report.xml
+                    '''
+                }
+            }
         }
-    }
-}
 
         stage('Generate Mochawesome Report') {
             steps {
                 echo "Generating Mochawesome report..."
-                // Adjust your report generation command if needed
-             //   bat "\"${env.NPX_CMD}\" mochawesome-merge cypress/results/*.json > mochawesome.json"
-             //   bat "\"${env.NPX_CMD}\" marge mochawesome.json -f report -o cypress/results"
             }
         }
     }
@@ -107,7 +103,9 @@ stage('Run Postman API Tests') {
         always {
             archiveArtifacts artifacts: 'cypress/results/**/*.*', allowEmptyArchive: true
             archiveArtifacts artifacts: 'newman-report.xml', allowEmptyArchive: true
-            junit 'newman-report.xml'  // publish Postman test results
+
+            junit 'newman-report.xml'
+
             echo "Pipeline finished. Check reports for details."
         }
     }
