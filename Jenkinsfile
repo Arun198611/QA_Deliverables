@@ -72,24 +72,24 @@ pipeline {
         /* -------------------------------
          *       POSTMAN API TESTS
          * ------------------------------- */
-stage('Run Postman API Tests') {
-    steps {
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-            echo "Running Postman API tests using Newman..."
+stage('Run Postman Tests') {
+    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+        echo "Running Postman API tests using Newman..."
 
-            bat """
-            "C:\\Program Files\\nodejs\\npm.cmd" install -g newman
+        // Install newman globally
+        bat '"C:\\Program Files\\nodejs\\npm.cmd" install -g newman'
 
-            SET PATH=C:\\Users\\%USERNAME%\\AppData\\Roaming\\npm;%PATH%
+        // Create the newman output directory
+        bat 'mkdir newman'
 
-            newman run "Postman\\Collections v2.json" ^
-                --reporters cli,junit ^
-                --reporter-junit-export newman-report.xml
-            """
-        }
+        // Run Newman with proper report output
+        bat """
+        newman run "Postman/Collections v2.json" ^
+            -r cli,junit ^
+            --reporter-junit-export newman/newman-report.xml
+        """
     }
 }
-
         stage('Generate Mochawesome Report') {
             steps {
                 echo "Generating Mochawesome report..."
@@ -98,13 +98,10 @@ stage('Run Postman API Tests') {
     }
 
     post {
-        always {
-            archiveArtifacts artifacts: 'cypress/results/**/*.*', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'newman-report.xml', allowEmptyArchive: true
+    always {
+        echo "Archiving Newman Reports..."
+        archiveArtifacts artifacts: 'newman/*.xml', fingerprint: true
 
-            junit 'newman-report.xml'
-
-            echo "Pipeline finished. Check reports for details."
-        }
+        junit 'newman/*.xml'
     }
 }
