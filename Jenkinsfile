@@ -72,36 +72,36 @@ pipeline {
         /* -------------------------------
          *       POSTMAN API TESTS
          * ------------------------------- */
-stage('Run Postman Tests') {
-    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-        echo "Running Postman API tests using Newman..."
+        stage('Run Postman Tests') {
+            steps {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    echo "Running Postman API tests using Newman..."
 
-        // Install newman globally
-        bat '"C:\\Program Files\\nodejs\\npm.cmd" install -g newman'
+                    bat '"C:\\Program Files\\nodejs\\npm.cmd" install -g newman'
 
-        // Create the newman output directory
-        bat 'mkdir newman'
+                    bat 'if not exist newman mkdir newman'
 
-        // Run Newman with proper report output
-        bat """
-        newman run "Postman/Collections v2.json" ^
-            -r cli,junit ^
-            --reporter-junit-export newman/newman-report.xml
-        """
-    }
-}
+                    bat """
+                    newman run "Postman/Collections v2.json" ^
+                        -r cli,junit ^
+                        --reporter-junit-export newman/newman-report.xml
+                    """
+                }
+            }
+        }
+
         stage('Generate Mochawesome Report') {
             steps {
                 echo "Generating Mochawesome report..."
             }
         }
-    }
+    }  // ← closes stages block
 
     post {
-    always {
-        echo "Archiving Newman Reports..."
-        archiveArtifacts artifacts: 'newman/*.xml', fingerprint: true
-
-        junit 'newman/*.xml'
+        always {
+            echo "Archiving Newman Reports..."
+            archiveArtifacts artifacts: 'newman/*.xml', fingerprint: true
+            junit 'newman/*.xml'
+        }
     }
-}
+} // ← closes pipeline block
