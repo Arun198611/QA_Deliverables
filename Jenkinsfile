@@ -94,7 +94,7 @@ pipeline {
                     bat 'if not exist newman mkdir newman'
 
                     bat """
-                    "${NPM_GLOBAL_BIN}\\newman.cmd" run "Postman/Collections v2.json" ^
+                    "${NPM_GLOBAL_BIN}\\newman.cmd" run "Postman/Collections_v2.json" ^
                         -r cli,junit ^
                         --reporter-junit-export newman/newman-report.xml
                     """
