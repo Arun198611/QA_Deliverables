@@ -74,20 +74,22 @@ pipeline {
 
 
 stage('Run Postman API Tests') {
-    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-        echo "Running Postman API tests using Newman..."
+    steps {
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+            echo "Running Postman API tests using Newman..."
 
-        bat '''
-        "C:\\Program Files\\nodejs\\npm.cmd" install -g newman
+            bat '''
+            "C:\\Program Files\\nodejs\\npm.cmd" install -g newman
 
-        rem add global npm folder to PATH
-        set PATH=C:\\Users\\%USERNAME%\\AppData\\Roaming\\npm;%PATH%
+            rem Add global npm folder to PATH
+            set PATH=C:\\Users\\%USERNAME%\\AppData\\Roaming\\npm;%PATH%
 
-        rem run Postman tests
-        newman run "Postman/Collections v2.json" ^
-            --reporters cli,junit ^
-            --reporter-junit-export newman-report.xml
-        '''
+            rem Run Postman collection
+            newman run "Postman/Collections v2.json" ^
+                --reporters cli,junit ^
+                --reporter-junit-export newman-report.xml
+            '''
+        }
     }
 }
 
